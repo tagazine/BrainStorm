@@ -1,0 +1,21 @@
+
+#canvas1 {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 1;
+}
+
+#canvas2 {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 2;
+}
+
+#canvas3 {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 3;
+}
