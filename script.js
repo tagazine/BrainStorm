@@ -285,13 +285,14 @@ function towerMaker(event) {
     mouse.x - logicianWidth * 0.5,
     mouse.y - logicianHeight * 0.5
   );
-  coin = 500;
-  if (coin >= 100) {
-    towerPlacer();
-    coin = coin - 100;
-    document.addEventListener("mousemove", towerMaker);
-    towerPlacer();
-  }
+  towerRange();
+  // coin = 500;
+  // if (coin >= 100) {
+  towerPlacer();
+  //   coin = coin - 100;
+  //   document.addEventListener("mousemove", towerMaker);
+  //   towerPlacer();
+  // }
 }
 function towerPlacer() {
   document.addEventListener("click", function () {
@@ -300,8 +301,36 @@ function towerPlacer() {
       mouse.x - logicianWidth * 0.5,
       mouse.y - logicianHeight * 0.5
     );
+    // towerRange();
+
     document.removeEventListener("mousemove", towerMaker);
+    shoot();
   });
+}
+
+function towerRange() {
+  canctx3.beginPath();
+  canctx3.arc(mouse.x, mouse.y, 125, 0, 360);
+  canctx3.fillColor = "yellow";
+  canctx3.globalAlpha = 0.3;
+  canctx3.closePath();
+  canctx3.fill();
+}
+
+function shoot() {
+  points.forEach((point) =>{
+    let distance = Math.sqrt(
+      (mouse.y - point[1]) ** 2 +
+        (mouse.x - point[0]) ** 2
+    );
+    
+    if (distance <=125){
+      canctx3.moveTo(mouse.x, mouse.y);
+      canctx3.lineTo(point[0], point[1]);
+      canctx3.stroke();
+      
+    }
+  })
 }
 
 // Resize title screen
