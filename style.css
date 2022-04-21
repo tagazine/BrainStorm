@@ -19,3 +19,11 @@
     top: 0px;
     z-index: 3;
 }
+
+#canvas4 {
+    position:absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 4;
+}
+

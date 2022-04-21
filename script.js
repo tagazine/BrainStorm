@@ -15,6 +15,11 @@ const canctx3 = canvas3.getContext("2d");
 canvas3.width = window.innerWidth;
 canvas3.height = window.innerHeight;
 
+const canvas4 = document.getElementById("canvas4");
+const canctx4 = canvas4.getContext("2d");
+canvas4.width = window.innerWidth;
+canvas4.height = window.innerHeight;
+
 // Global Variables
 const brain = document.getElementById("brain");
 const badBrain = document.getElementById("badBrain");
@@ -74,6 +79,8 @@ class Sound {
   }
 }
 function drawBrain() {
+  var badBrainLocX = 0.5 * canvas.width - 0.5 * badBrainWidth;
+  var badBrainLocY = 0.5 * canvas.height - 0.5 * badBrainHeight;
   setTimeout(() => {
     canctx.drawImage(badBrain, badBrainLocX, badBrainLocY);
   }, 2500);
@@ -82,8 +89,7 @@ function drawBrain() {
 function brainMaker() {
   var brainLocX = 0.5 * canvas.width - 0.5 * brainWidth;
   var brainLocY = 0.5 * canvas.height - 0.5 * brainHeight;
-  var badBrainLocX = 0.5 * canvas.width - 0.5 * badBrainWidth;
-  var badBrainLocY = 0.5 * canvas.height - 0.5 * badBrainHeight;
+
   canctx.drawImage(brain, brainLocX, brainLocY);
   document.addEventListener("click", drawBrain);
 }
@@ -236,11 +242,46 @@ function makeEnemies() {
     points.forEach((point) => {
       setTimeout(() => {
         canctx2.clearRect(0, 0, canvas.width, canvas.height);
-        canctx2.drawImage(
-          obsessoImage,
-          point[0] - 0.5 * obsessoWidth,
-          point[1] - 0.5 * obsessoHeight
-        );
+        // canctx2.drawImage(
+        //   obsessoImage,
+        //   point[0] - 0.5 * obsessoWidth,
+        //   point[1] - 0.5 * obsessoHeight
+        // );
+        canctx2.beginPath();
+        canctx2.arc(point[0], point[1], 10, 0, 360);
+        canctx2.stroke();
+        canctx2.closePath();
+        if (points.indexOf(point) > 10000) {
+          canctx2.beginPath();
+          canctx2.arc(
+            points[points.indexOf(point) - 10000][0],
+            points[points.indexOf(point) - 10000][1],
+            10,
+            0,
+            360
+          );
+          canctx2.stroke();
+          canctx2.closePath();
+        }
+        
+        if (points.indexOf(point) === points.length-1) {
+          for (let i = 0; i < 10000; i++) {
+            setTimeout(()=> {
+            canctx2.clearRect(0,0,canvas.width, canvas.height);
+            canctx2.beginPath();
+            canctx2.arc(
+              
+              points[points.indexOf(point) - (10000-i)][0],
+              points[points.indexOf(point) - (10000-i)][1],
+              10,
+              0,
+              360
+            );
+            canctx2.stroke();
+            canctx2.closePath();
+          },1)
+          }
+        }
       }, 1);
     });
   }, 3000);
@@ -301,10 +342,9 @@ function towerPlacer() {
       mouse.x - logicianWidth * 0.5,
       mouse.y - logicianHeight * 0.5
     );
-    // towerRange();
-
     document.removeEventListener("mousemove", towerMaker);
     shoot();
+    console.log(mouse.x, mouse.y)
   });
 }
 
@@ -318,19 +358,23 @@ function towerRange() {
 }
 
 function shoot() {
-  points.forEach((point) =>{
+  points.forEach((point) => {
+    // setTimeout(()=> {
     let distance = Math.sqrt(
-      (mouse.y - point[1]) ** 2 +
-        (mouse.x - point[0]) ** 2
+      (mouse.y - point[1]) ** 2 + (mouse.x - point[0]) ** 2
     );
-    
-    if (distance <=125){
-      canctx3.moveTo(mouse.x, mouse.y);
-      canctx3.lineTo(point[0], point[1]);
-      canctx3.stroke();
-      
+
+    if (distance <= 125) {
+
+      // canctx4.clearRect(0,0,canvas.width, canvas.height);
+// console.log(distance)
+      // canctx4.moveTo(mouse.x, mouse.y);
+      // canctx4.lineTo(point[0], point[1]);
+      // canctx4.stroke();
+
     }
-  })
+    // }, 1)
+  });
 }
 
 // Resize title screen
