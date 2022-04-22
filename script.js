@@ -147,11 +147,11 @@ function allPoints(i) {
     (coords[i - 1][1] - coords[i][1]) ** 2 +
       (coords[i - 1][0] - coords[i][0]) ** 2
   );
-  let rate = (1 / distance) * 0.01;
+  let rate = (1 / distance) * 0.05;
   for (let progress = 0; progress <= 1; progress += rate) {
     x = coords[i - 1][0] + (coords[i][0] - coords[i - 1][0]) * progress;
     y = coords[i - 1][1] + (coords[i][1] - coords[i - 1][1]) * progress;
-    points.push([x, y]);
+    points.push([x, y, false]);
   }
 }
 
@@ -243,47 +243,53 @@ function makeEnemies() {
   setTimeout(() => {
     points.forEach((point) => {
       setTimeout(() => {
-        canctx2.clearRect(0, 0, canvas.width, canvas.height);
-        canctx2.beginPath();
-        canctx2.arc(point[0], point[1], 10, 0, 360);
-        canctx2.stroke();
-        canctx2.closePath();
-        if (points.indexOf(point) > 10000) {
+        if (point[2] === true) {
+          canctx2.clearRect(0, 0, canvas.width, canvas.height);
+          canctx2.strokeStyle = "#ff0000";
           canctx2.beginPath();
-          canctx2.arc(
-            points[points.indexOf(point) - 10000][0],
-            points[points.indexOf(point) - 10000][1],
-            10,
-            0,
-            360
-          );
+          canctx2.arc(point[0], point[1], 10, 0, 360);
+          canctx2.stroke();
+          canctx2.closePath();
+
+          // if (points.indexOf(point) > 10000) {
+          //   canctx2.beginPath();
+          //   canctx2.arc(
+          //     points[points.indexOf(point) - 10000][0],
+          //     points[points.indexOf(point) - 10000][1],
+          //     10,
+          //     0,
+          //     360
+          //   );
+          //   canctx2.stroke();
+          //   canctx2.closePath();
+          // }
+
+          // if (points.indexOf(point) === points.length - 1) {
+          //   for (let i = 0; i < 10000; i++) {
+          //     setTimeout(() => {
+          //       canctx2.clearRect(0, 0, canvas.width, canvas.height);
+          //       canctx2.beginPath();
+          //       canctx2.arc(
+          //         points[points.indexOf(point) - (10000 - i)][0],
+          //         points[points.indexOf(point) - (10000 - i)][1],
+          //         10,
+          //         0,
+          //         360
+          //       );
+          //       canctx2.stroke();
+          //       canctx2.closePath();
+          //     }, 1);
+          //   }
+          // }
+        } else if (point[2] === false) {
+          canctx2.clearRect(0, 0, canvas.width, canvas.height);
+          canctx2.strokeStyle = "000000";
+          canctx2.beginPath();
+          canctx2.arc(point[0], point[1], 10, 0, 360);
           canctx2.stroke();
           canctx2.closePath();
         }
-
-        if (points.indexOf(point) === points.length - 1) {
-          for (let i = 0; i < 10000; i++) {
-            setTimeout(() => {
-              canctx2.clearRect(0, 0, canvas.width, canvas.height);
-              canctx2.beginPath();
-              canctx2.arc(
-                points[points.indexOf(point) - (10000 - i)][0],
-                points[points.indexOf(point) - (10000 - i)][1],
-                10,
-                0,
-                360
-              );
-              canctx2.stroke();
-              canctx2.closePath();
-            }, 1);
-          }
-        }
-        shootArray.forEach((shot) => {
-          if (point[0] === shot[0] && point[1] === shot[1]) {
-            canctx2.fillColor = "red";
-          }
-        });
-      }, 1);
+      }, 500);
     });
   }, 3000);
 }
@@ -340,7 +346,7 @@ function towerMaker(event) {
 }
 function towerPlacer() {
   aim();
-
+  // shoot();
   canctx3.drawImage(
     logician,
     mouse.x - logicianWidth * 0.5,
@@ -363,10 +369,13 @@ function towerRange() {
 function aim() {
   points.forEach((point) => {
     distance = Math.sqrt((point[1] - mouse.y) ** 2 + (point[0] - mouse.x) ** 2);
-    console.log(distance);
-    if (distance < 125) {
-      shootArray.push([point[0], point[1]]);
+
+    if (distance > 125) {
+      point[2] = false;
+    } else {
+      point[2] = true;
     }
+    console.log(point[2])
   });
 }
 
