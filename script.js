@@ -26,7 +26,8 @@ const badBrain = document.getElementById("badBrain");
 const cloud = document.getElementById("cloud");
 const obsessoImage = document.getElementById("obsesso");
 const logician = document.getElementById("logician");
-const mouse = {
+
+var mouse = {
   x: null,
   y: null,
 };
@@ -34,6 +35,7 @@ const mouse = {
 var coin = 0;
 var coords = [];
 var points = [];
+var shootArray = [];
 
 var brainHeight = document.getElementById("brain").height;
 var brainWidth = document.getElementById("brain").width;
@@ -242,11 +244,6 @@ function makeEnemies() {
     points.forEach((point) => {
       setTimeout(() => {
         canctx2.clearRect(0, 0, canvas.width, canvas.height);
-        // canctx2.drawImage(
-        //   obsessoImage,
-        //   point[0] - 0.5 * obsessoWidth,
-        //   point[1] - 0.5 * obsessoHeight
-        // );
         canctx2.beginPath();
         canctx2.arc(point[0], point[1], 10, 0, 360);
         canctx2.stroke();
@@ -263,25 +260,29 @@ function makeEnemies() {
           canctx2.stroke();
           canctx2.closePath();
         }
-        
-        if (points.indexOf(point) === points.length-1) {
+
+        if (points.indexOf(point) === points.length - 1) {
           for (let i = 0; i < 10000; i++) {
-            setTimeout(()=> {
-            canctx2.clearRect(0,0,canvas.width, canvas.height);
-            canctx2.beginPath();
-            canctx2.arc(
-              
-              points[points.indexOf(point) - (10000-i)][0],
-              points[points.indexOf(point) - (10000-i)][1],
-              10,
-              0,
-              360
-            );
-            canctx2.stroke();
-            canctx2.closePath();
-          },1)
+            setTimeout(() => {
+              canctx2.clearRect(0, 0, canvas.width, canvas.height);
+              canctx2.beginPath();
+              canctx2.arc(
+                points[points.indexOf(point) - (10000 - i)][0],
+                points[points.indexOf(point) - (10000 - i)][1],
+                10,
+                0,
+                360
+              );
+              canctx2.stroke();
+              canctx2.closePath();
+            }, 1);
           }
         }
+        shootArray.forEach((shot) => {
+          if (point[0] === shot[0] && point[1] === shot[1]) {
+            canctx2.fillColor = "red";
+          }
+        });
       }, 1);
     });
   }, 3000);
@@ -314,6 +315,7 @@ function levelUp() {
   boltMaker();
   makeEnemies();
   document.addEventListener("mousemove", towerMaker);
+  document.removeEventListener("click", levelUp);
 }
 
 // Placing Tower
@@ -329,23 +331,24 @@ function towerMaker(event) {
   towerRange();
   // coin = 500;
   // if (coin >= 100) {
-  towerPlacer();
+  document.addEventListener("click", towerPlacer);
+
   //   coin = coin - 100;
   //   document.addEventListener("mousemove", towerMaker);
   //   towerPlacer();
   // }
 }
 function towerPlacer() {
-  document.addEventListener("click", function () {
-    canctx3.drawImage(
-      logician,
-      mouse.x - logicianWidth * 0.5,
-      mouse.y - logicianHeight * 0.5
-    );
-    document.removeEventListener("mousemove", towerMaker);
-    shoot();
-    console.log(mouse.x, mouse.y)
-  });
+  aim();
+
+  canctx3.drawImage(
+    logician,
+    mouse.x - logicianWidth * 0.5,
+    mouse.y - logicianHeight * 0.5
+  );
+
+  document.removeEventListener("mousemove", towerMaker);
+  document.removeEventListener("click", towerPlacer);
 }
 
 function towerRange() {
@@ -357,23 +360,22 @@ function towerRange() {
   canctx3.fill();
 }
 
-function shoot() {
+function aim() {
   points.forEach((point) => {
-    // setTimeout(()=> {
-    let distance = Math.sqrt(
-      (mouse.y - point[1]) ** 2 + (mouse.x - point[0]) ** 2
-    );
-
-    if (distance <= 125) {
-
-      // canctx4.clearRect(0,0,canvas.width, canvas.height);
-// console.log(distance)
-      // canctx4.moveTo(mouse.x, mouse.y);
-      // canctx4.lineTo(point[0], point[1]);
-      // canctx4.stroke();
-
+    distance = Math.sqrt((point[1] - mouse.y) ** 2 + (point[0] - mouse.x) ** 2);
+    console.log(distance);
+    if (distance < 125) {
+      shootArray.push([point[0], point[1]]);
     }
-    // }, 1)
+  });
+}
+
+function shoot() {
+  shootArray.forEach((shot) => {
+    canctx4.clearRect(0, 0, canvas.width, canvas.height);
+    canctx4.moveTo(mouse.x, mouse.y);
+    canctx4.lineTo(shot[0], shot[1]);
+    canctx4.stroke();
   });
 }
 
