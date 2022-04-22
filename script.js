@@ -27,6 +27,10 @@ const cloud = document.getElementById("cloud");
 const obsessoImage = document.getElementById("obsesso");
 const logician = document.getElementById("logician");
 const house = document.getElementById("house");
+const playground = document.getElementById("playground");
+const forest = document.getElementById("forest");
+const pup = document.getElementById("pup");
+
 
 var mouse = {
   x: null,
@@ -41,10 +45,16 @@ var brainHeight = document.getElementById("brain").height;
 var brainWidth = document.getElementById("brain").width;
 var badBrainHeight = document.getElementById("badBrain").height;
 var badBrainWidth = document.getElementById("badBrain").width;
-var obsessoHeight = document.getElementById("obsesso").height;
-var obsessoWidth = document.getElementById("obsesso").width;
+var houseHeight = document.getElementById("house").height;
+var houseWidth = document.getElementById("house").width;
 var logicianHeight = document.getElementById("logician").height;
 var logicianWidth = document.getElementById("logician").width;
+var playHeight = document.getElementById("playground").height;
+var playWidth = document.getElementById("playground").width;
+var forestHeight = document.getElementById("forest").height;
+var forestWidth = document.getElementById("forest").width;
+var pupHeight = document.getElementById("pup").height;
+var pupWidth = document.getElementById("pup").width;
 
 var brainLocX = 0.5 * canvas.width - 0.5 * brainWidth;
 var brainLocY = 0.5 * canvas.height - 0.5 * brainHeight;
@@ -91,19 +101,39 @@ function drawBrain() {
 function brainMaker() {
   var brainLocX = 0.5 * canvas.width - 0.5 * brainWidth;
   var brainLocY = 0.5 * canvas.height - 0.5 * brainHeight;
- 
   canctx.drawImage(brain, brainLocX, brainLocY);
-  
 
   document.addEventListener("click", drawBrain);
 }
 
 function idyllMaker() {
-  
   house.onload = function () {
-    canctx4.drawImage(house, 0.05 * canvas.width, 0.375 * canvas.height);
+    canctx4.drawImage(
+      house,
+      0.1 * canvas.width - 0.5 * houseWidth,
+      0.5 * canvas.height - 0.5 * houseHeight
+    );
   };
-  
+  playground.onload = function () {
+    canctx4.drawImage(
+      playground,
+      0.7 * canvas.width - 0.5 * playWidth,
+      0.8 * canvas.height - 0.5 * playHeight
+    );
+  };
+  forest.onload = function () {
+    canctx4.drawImage(
+      forest,
+      0.8 * canvas.width - 0.5 * forestWidth,
+      0.43 * canvas.height - 0.5 * forestHeight
+    );
+  };
+
+  pup.onload = function (){
+    canctx4.drawImage(
+      pup, .15*canvas.width - .5*pupWidth, .75*canvas.height -.5*pupHeight
+    )
+  }
   var earth = canctx2.createLinearGradient(
     0.5 * canvas.width,
     0.5 * canvas.height,
@@ -147,6 +177,7 @@ function idyllMaker() {
 
 // Clouds
 function cloudMaker() {
+  canctx4.clearRect(0, 0, canvas.width, canvas.height);
   for (let x = -350; x < canvas.width; x += 120) {
     for (let y = -350; y < canvas.height; y += 120) {
       setTimeout(() => {
@@ -376,7 +407,6 @@ function transitionScreen() {
 
 // Creating next level
 function levelUp() {
-  canctx4.clearRect(0,0,canvas.width, canvas.height);
   cloudMaker();
   boltMaker();
   makeEnemies();
