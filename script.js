@@ -244,6 +244,7 @@ function makeEnemies() {
     points.forEach((point) => {
       setTimeout(() => {
         if (point[2] === true) {
+          
           canctx2.clearRect(0, 0, canvas.width, canvas.height);
           canctx2.strokeStyle = "#ff0000";
           canctx2.beginPath();
@@ -282,8 +283,9 @@ function makeEnemies() {
           //   }
           // }
         } else if (point[2] === false) {
+          
           canctx2.clearRect(0, 0, canvas.width, canvas.height);
-          canctx2.strokeStyle = "000000";
+          canctx2.strokeStyle = "#000000";
           canctx2.beginPath();
           canctx2.arc(point[0], point[1], 10, 0, 360);
           canctx2.stroke();
@@ -320,6 +322,7 @@ function levelUp() {
   cloudMaker();
   boltMaker();
   makeEnemies();
+
   document.addEventListener("mousemove", towerMaker);
   document.removeEventListener("click", levelUp);
 }
@@ -346,6 +349,7 @@ function towerMaker(event) {
 }
 function towerPlacer() {
   aim();
+
   // shoot();
   canctx3.drawImage(
     logician,
@@ -375,7 +379,7 @@ function aim() {
     } else {
       point[2] = true;
     }
-    console.log(point[2])
+    
   });
 }
 
