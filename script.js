@@ -26,6 +26,7 @@ const badBrain = document.getElementById("badBrain");
 const cloud = document.getElementById("cloud");
 const obsessoImage = document.getElementById("obsesso");
 const logician = document.getElementById("logician");
+const house = document.getElementById("house");
 
 var mouse = {
   x: null,
@@ -35,7 +36,6 @@ var mouse = {
 var coin = 0;
 var coords = [];
 var points = [];
-var shootArray = [];
 
 var brainHeight = document.getElementById("brain").height;
 var brainWidth = document.getElementById("brain").width;
@@ -91,22 +91,40 @@ function drawBrain() {
 function brainMaker() {
   var brainLocX = 0.5 * canvas.width - 0.5 * brainWidth;
   var brainLocY = 0.5 * canvas.height - 0.5 * brainHeight;
-
+ 
   canctx.drawImage(brain, brainLocX, brainLocY);
+  
+
   document.addEventListener("click", drawBrain);
 }
 
 function idyllMaker() {
-  // Earth
-  var earth = canctx2.createLinearGradient(0, 0, 800, canvas.height);
-  earth.addColorStop(0, "greenyellow");
-  earth.addColorStop(1, "darkgreen");
+  
+  house.onload = function () {
+    canctx4.drawImage(house, 0.05 * canvas.width, 0.375 * canvas.height);
+  };
+  
+  var earth = canctx2.createLinearGradient(
+    0.5 * canvas.width,
+    0.5 * canvas.height,
+    0.5 * canvas.width,
+    canvas.height
+  );
+  earth.addColorStop(0, "darkgreen");
+  earth.addColorStop(0.4, "green");
+  earth.addColorStop(1, "yellowgreen");
   canctx.fillStyle = earth;
   canctx.fillRect(0, (1 / 2) * canvas.height, canvas.width, canvas.height);
 
   // Sky
-  var sky = canctx.createLinearGradient(0, 0, 100, canvas.height);
+  var sky = canctx.createLinearGradient(
+    0.5 * canvas.width,
+    0,
+    0.5 * canvas.width,
+    0.5 * canvas.height
+  );
   sky.addColorStop(0, "navy");
+  sky.addColorStop(0.5, "blue");
   sky.addColorStop(1, "skyblue");
   canctx.fillStyle = sky;
   canctx.fillRect(0, 0, canvas.width, (1 / 2) * canvas.height);
@@ -147,11 +165,40 @@ function allPoints(i) {
     (coords[i - 1][1] - coords[i][1]) ** 2 +
       (coords[i - 1][0] - coords[i][0]) ** 2
   );
-  let rate = (1 / distance) * 0.05;
+  let rate = (1 / distance) * 0.03;
   for (let progress = 0; progress <= 1; progress += rate) {
     x = coords[i - 1][0] + (coords[i][0] - coords[i - 1][0]) * progress;
     y = coords[i - 1][1] + (coords[i][1] - coords[i - 1][1]) * progress;
     points.push([x, y, false]);
+  }
+}
+
+function shootPoints(point) {
+  let rate = 0.5;
+  for (let progress = 0; progress <= 1; progress += rate) {
+    x = mouse.x + (point[0] - mouse.x) * progress;
+    y = mouse.y + (point[1] - mouse.y) * progress;
+    canctx4.clearRect(0, 0, canvas.width, canvas.height);
+    var shoot = canctx4.createLinearGradient(
+      mouse.x,
+      mouse.y,
+      point[0],
+      point[1]
+    );
+    shoot.addColorStop(0, "red");
+    shoot.addColorStop(0.125, "orange");
+    shoot.addColorStop(0.25, "yellow");
+    shoot.addColorStop(0.375, "green");
+    shoot.addColorStop(0.5, "blue");
+    shoot.addColorStop(0.625, "indigo");
+    shoot.addColorStop(0.75, "violet");
+    shoot.addColorStop(1, "#000000");
+    canctx4.strokeStyle = shoot;
+    canctx4.beginPath();
+    canctx4.moveTo(mouse.x, mouse.y);
+    canctx4.lineTo(point[0], point[1]);
+    canctx4.stroke();
+    canctx4.closePath();
   }
 }
 
@@ -164,7 +211,7 @@ function boltMaker() {
 
   canctx.lineWidth = 45;
 
-  canctx.strokeStyle = `rgb(255,255,240`;
+  canctx.strokeStyle = `rgb(255,255,235`;
 
   setTimeout(() => {
     if (sideRan === 0) {
@@ -228,6 +275,7 @@ function boltMaker() {
     coords.push([0.5 * canvas.width, 0.5 * canvas.height]);
 
     canctx.lineTo(0.5 * canvas.width, 0.5 * canvas.height);
+    canctx.lineJoin = "bevel";
     canctx.stroke();
     allPoints(coords.length - 1);
     var strike = new Sound("assets/strike.wav");
@@ -243,14 +291,22 @@ function makeEnemies() {
   setTimeout(() => {
     points.forEach((point) => {
       setTimeout(() => {
-        if (point[2] === true) {
-          
+        if (point[2]) {
           canctx2.clearRect(0, 0, canvas.width, canvas.height);
           canctx2.strokeStyle = "#ff0000";
           canctx2.beginPath();
           canctx2.arc(point[0], point[1], 10, 0, 360);
           canctx2.stroke();
           canctx2.closePath();
+
+          shootPoints(point);
+
+          // canctx4.strokeStyle = "#000000";
+          // canctx4.beginPath();
+          // canctx4.moveTo(mouse.x, mouse.y);
+          // canctx4.lineTo(point[0], point[1]);
+          // canctx4.stroke();
+          // canctx4.closePath();
 
           // if (points.indexOf(point) > 10000) {
           //   canctx2.beginPath();
@@ -282,16 +338,17 @@ function makeEnemies() {
           //     }, 1);
           //   }
           // }
-        } else if (point[2] === false) {
-          
+        } else if (!point[2]) {
           canctx2.clearRect(0, 0, canvas.width, canvas.height);
+          canctx4.clearRect(0, 0, canvas.width, canvas.height);
+
           canctx2.strokeStyle = "#000000";
           canctx2.beginPath();
           canctx2.arc(point[0], point[1], 10, 0, 360);
           canctx2.stroke();
           canctx2.closePath();
         }
-      }, 500);
+      }, 5);
     });
   }, 3000);
 }
@@ -319,6 +376,7 @@ function transitionScreen() {
 
 // Creating next level
 function levelUp() {
+  canctx4.clearRect(0,0,canvas.width, canvas.height);
   cloudMaker();
   boltMaker();
   makeEnemies();
@@ -379,7 +437,6 @@ function aim() {
     } else {
       point[2] = true;
     }
-    
   });
 }
 
