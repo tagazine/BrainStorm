@@ -31,7 +31,6 @@ const playground = document.getElementById("playground");
 const forest = document.getElementById("forest");
 const pup = document.getElementById("pup");
 
-
 var mouse = {
   x: null,
   y: null,
@@ -63,15 +62,13 @@ var badBrainLocY = 0.5 * canvas.height - 0.5 * badBrainHeight;
 
 // enemies
 class Enemy {
-  constructor(name, value, offense, defense, speed) {
+  constructor(name, value, speed) {
     this.name = name;
     this.value = value;
-    this.offense = offense;
-    this.defense = defense;
     this.speed = speed;
   }
 }
-var obsesso = new Enemy("Obsess-O", 5, 2, 2, 1);
+var obsesso = new Enemy("Obsess-O", 300, 2);
 
 // Functions
 class Sound {
@@ -104,6 +101,9 @@ function brainMaker() {
   canctx.drawImage(brain, brainLocX, brainLocY);
 
   document.addEventListener("click", drawBrain);
+  if (obsesso.value <= 0) {
+    canctx4.drawImage(brain, brainLocX, brainLocY);
+  }
 }
 
 function idyllMaker() {
@@ -129,11 +129,13 @@ function idyllMaker() {
     );
   };
 
-  pup.onload = function (){
+  pup.onload = function () {
     canctx4.drawImage(
-      pup, .15*canvas.width - .5*pupWidth, .75*canvas.height -.5*pupHeight
-    )
-  }
+      pup,
+      0.15 * canvas.width - 0.5 * pupWidth,
+      0.75 * canvas.height - 0.5 * pupHeight
+    );
+  };
   var earth = canctx2.createLinearGradient(
     0.5 * canvas.width,
     0.5 * canvas.height,
@@ -329,8 +331,9 @@ function makeEnemies() {
           canctx2.arc(point[0], point[1], 10, 0, 360);
           canctx2.stroke();
           canctx2.closePath();
-
           shootPoints(point);
+          console.log(obsesso.value);
+          obsesso.value = obsesso.value - 0.05;
 
           // canctx4.strokeStyle = "#000000";
           // canctx4.beginPath();
@@ -379,11 +382,63 @@ function makeEnemies() {
           canctx2.stroke();
           canctx2.closePath();
         }
+       
+        if (points.indexOf(point) >= points.length - 1) {
+          lose();
+          return makeEnemies;
+        }
+        if (obsesso.value <= 0) {
+          win();
+          return makeEnemies;
+        }
       }, 5);
     });
   }, 3000);
 }
-
+function win() {
+  canctx.clearRect(0, 0, canvas.width, canvas.height);
+  canctx2.clearRect(0, 0, canvas.width, canvas.height);
+  canctx3.clearRect(0, 0, canvas.width, canvas.height);
+  canctx4.clearRect(0, 0, canvas.width, canvas.height);
+  var sky = canctx4.createLinearGradient(
+    0.5 * canvas.width,
+    0,
+    0.5 * canvas.width,
+    0.5 * canvas.height
+  );
+  sky.addColorStop(0, "navy");
+  sky.addColorStop(0.5, "blue");
+  sky.addColorStop(1, "skyblue");
+  canctx4.fillStyle = sky;
+  canctx4.fillRect(0, 0, canvas.width, canvas.height);
+  brainMaker();
+  canctx4.font = "100px Cursive";
+  canctx4.fillStyle = "black";
+  canctx4.textAlign = "center";
+  canctx4.fillText("You win!", canvas.width / 2, canvas.height / 5);
+}
+function lose() {
+  canctx.clearRect(0, 0, canvas.width, canvas.height);
+  canctx2.clearRect(0, 0, canvas.width, canvas.height);
+  canctx3.clearRect(0, 0, canvas.width, canvas.height);
+  canctx4.clearRect(0, 0, canvas.width, canvas.height);
+  var sky = canctx4.createLinearGradient(
+    0.5 * canvas.width,
+    0,
+    0.5 * canvas.width,
+    0.5 * canvas.height
+  );
+  sky.addColorStop(0, "darkred");
+  sky.addColorStop(0.5, "red");
+  sky.addColorStop(1, "pink");
+  canctx4.fillStyle = sky;
+  canctx4.fillRect(0, 0, canvas.width, canvas.height);
+  canctx4.drawImage(badBrain, badBrainLocX, badBrainLocY);
+  canctx4.font = "100px Cursive";
+  canctx4.fillStyle = "black";
+  canctx4.textAlign = "center";
+  canctx4.fillText("You lose!", canvas.width / 2, canvas.height / 5);
+}
 // Title and transition page text
 function transitionText() {
   canctx.font = "100px Cursive";
@@ -410,7 +465,9 @@ function levelUp() {
   cloudMaker();
   boltMaker();
   makeEnemies();
-
+  if (obsesso.value <= 0) {
+    return;
+  }
   document.addEventListener("mousemove", towerMaker);
   document.removeEventListener("click", levelUp);
 }
@@ -467,15 +524,6 @@ function aim() {
     } else {
       point[2] = true;
     }
-  });
-}
-
-function shoot() {
-  shootArray.forEach((shot) => {
-    canctx4.clearRect(0, 0, canvas.width, canvas.height);
-    canctx4.moveTo(mouse.x, mouse.y);
-    canctx4.lineTo(shot[0], shot[1]);
-    canctx4.stroke();
   });
 }
 
