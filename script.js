@@ -73,7 +73,20 @@ class Enemy {
     canctx2.beginPath();
     canctx2.arc(point[0], point[1], 10, 0, 360);
     canctx2.stroke();
+    canctx2.strokeStyle = "red";
+    canctx2.arc(point[0], point[1], 7, 0, 360);
+    canctx2.stroke();
+    canctx2.strokeStyle = "green";
+    canctx2.arc(point[0], point[1], 4, 0, 360);
+    canctx2.stroke();
+    canctx2.strokeStyle = "black";
+    canctx2.arc(point[0], point[1], 1, 0, 360);
+    canctx2.stroke();
     canctx2.closePath();
+
+    canctx2.font = "10px Block";
+    canctx2.textAlign = "center";
+    canctx2.fillText(Math.round(obsesso.value), point[0], point[1] - 15); // COULD BE LESS HARDCODED
   }
 }
 
@@ -387,9 +400,10 @@ function makeEnemies() {
         if (point[2]) {
           // If in Tower Radius:
           canctx2.strokeStyle = "#ff0000";
+          canctx2.fillStyle = "#ff0000";
+          obsesso.value = obsesso.value - 0.05;
           obsesso.draw(point);
           shootPoints(point);
-          obsesso.value = obsesso.value - 0.05;
 
           // WORKING ON MORE ENEMIES (NOT VERY DRY OR DYNAMIC YET)
           // canctx4.strokeStyle = "#000000";
@@ -432,6 +446,7 @@ function makeEnemies() {
         } else if (!point[2]) {
           // If Outside Tower Radius
           canctx2.strokeStyle = "#000000";
+          canctx2.fillStyle = "#000000";
           obsesso.draw(point);
         }
 
