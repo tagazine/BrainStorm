@@ -60,7 +60,7 @@ var brainLocY = 0.5 * canvas.height - 0.5 * brainHeight;
 var badBrainLocX = 0.5 * canvas.width - 0.5 * badBrainWidth;
 var badBrainLocY = 0.5 * canvas.height - 0.5 * badBrainHeight;
 
-// enemies
+// Class Constructors (More Coming Soon)
 class Enemy {
   constructor(name, value, speed) {
     this.name = name;
@@ -70,8 +70,7 @@ class Enemy {
 }
 var obsesso = new Enemy("Obsess-O", 300, 2);
 
-// Functions
-class Sound {
+class Sound { // NEED TO STOP SOUNDS
   constructor(src) {
     this.Sound = document.createElement("audio");
     this.Sound.src = src;
@@ -87,6 +86,9 @@ class Sound {
     };
   }
 }
+
+// Functions
+// Making and Drawing the Two Brains
 function drawBrain() {
   var badBrainLocX = 0.5 * canvas.width - 0.5 * badBrainWidth;
   var badBrainLocY = 0.5 * canvas.height - 0.5 * badBrainHeight;
@@ -99,29 +101,29 @@ function brainMaker() {
   var brainLocX = 0.5 * canvas.width - 0.5 * brainWidth;
   var brainLocY = 0.5 * canvas.height - 0.5 * brainHeight;
   canctx.drawImage(brain, brainLocX, brainLocY);
-
   document.addEventListener("click", drawBrain);
   if (obsesso.value <= 0) {
     canctx4.drawImage(brain, brainLocX, brainLocY);
   }
 }
 
+// Idyllic Opening Scene
 function idyllMaker() {
-  house.onload = function () {
+  house.onload = function () {  // House
     canctx4.drawImage(
       house,
       0.1 * canvas.width - 0.5 * houseWidth,
       0.5 * canvas.height - 0.5 * houseHeight
     );
   };
-  playground.onload = function () {
+  playground.onload = function () { // Playground
     canctx4.drawImage(
       playground,
       0.7 * canvas.width - 0.5 * playWidth,
       0.8 * canvas.height - 0.5 * playHeight
     );
   };
-  forest.onload = function () {
+  forest.onload = function () { // Forest
     canctx4.drawImage(
       forest,
       0.8 * canvas.width - 0.5 * forestWidth,
@@ -129,14 +131,15 @@ function idyllMaker() {
     );
   };
 
-  pup.onload = function () {
+  pup.onload = function () { // Playing Pup
     canctx4.drawImage(
       pup,
       0.15 * canvas.width - 0.5 * pupWidth,
       0.75 * canvas.height - 0.5 * pupHeight
     );
   };
-  var earth = canctx2.createLinearGradient(
+
+  var earth = canctx2.createLinearGradient( // Radiant Ground
     0.5 * canvas.width,
     0.5 * canvas.height,
     0.5 * canvas.width,
@@ -148,8 +151,8 @@ function idyllMaker() {
   canctx.fillStyle = earth;
   canctx.fillRect(0, (1 / 2) * canvas.height, canvas.width, canvas.height);
 
-  // Sky
-  var sky = canctx.createLinearGradient(
+  
+  var sky = canctx.createLinearGradient( // Radiant Sky
     0.5 * canvas.width,
     0,
     0.5 * canvas.width,
@@ -161,8 +164,8 @@ function idyllMaker() {
   canctx.fillStyle = sky;
   canctx.fillRect(0, 0, canvas.width, (1 / 2) * canvas.height);
 
-  // Sun
-  var sun = canctx2.createRadialGradient(
+  
+  var sun = canctx2.createRadialGradient( // Radiant Sun
     canvas.width,
     0,
     10,
@@ -177,7 +180,76 @@ function idyllMaker() {
   canctx2.fill();
 }
 
-// Clouds
+// Title and Transition Page Text
+function transitionText() {
+  canctx.font = "100px Cursive";
+  canctx.fillStyle = "black";
+  canctx.textAlign = "center";
+  canctx.fillText("Brain Storm", canvas.width / 2, canvas.height / 5);
+  canctx.font = "17px Times New Roman";
+  canctx.fillText(
+    "(Click Anywhere to Start)",
+    canvas.width / 2,
+    canvas.height / 1.2
+  );
+}
+
+// Resize Title Screen
+function resize() {
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas2.width = window.innerWidth;
+    canvas2.height = window.innerHeight;
+    canvas3.width = window.innerWidth;
+    canvas3.height = window.innerHeight;
+    transitionScreen();
+  });
+  window.removeEventListener("resize", resize);
+}
+
+// Title and Transition Screen
+function transitionScreen() {
+  idyllMaker();
+  brainMaker();
+  transitionText();
+}
+
+// Creating next level (ONLY ONE FOR NOW)
+function levelUp() {
+  cloudMaker();
+  boltMaker();
+  makeEnemies();
+  if (obsesso.value <= 0) {
+    return;
+  }
+  document.addEventListener("mousemove", towerMaker);
+  document.removeEventListener("click", levelUp);
+}
+
+// Placing Tower
+function towerMaker(event) {
+  mouse.x = event.x;
+  mouse.y = event.y;
+  canctx3.clearRect(0, 0, canvas.width, canvas.height);
+  canctx3.drawImage(
+    logician,
+    mouse.x - logicianWidth * 0.5,
+    mouse.y - logicianHeight * 0.5
+  );
+  towerRange();
+  document.addEventListener("click", towerPlacer);
+
+  // EVENTUAL TOWER PAYMENT
+  // coin = 500;
+  // if (coin >= 100) {
+  //   coin = coin - 100;
+  //   document.addEventListener("mousemove", towerMaker);
+  //   towerPlacer();
+  // }
+}
+
+// Storm Moving In
 function cloudMaker() {
   canctx4.clearRect(0, 0, canvas.width, canvas.height);
   for (let x = -350; x < canvas.width; x += 120) {
@@ -185,16 +257,16 @@ function cloudMaker() {
       setTimeout(() => {
         canctx.drawImage(cloud, x, y);
         canctx2.clearRect(0, 0, canvas.height, canvas.width);
-      }, 1000);
+      }, 500);
     }
   }
   document.removeEventListener("click", levelUp);
   document.removeEventListener("click", drawBrain);
 }
 
-// Get points on a line
+// Get Points on a Line
 function allPoints(i) {
-  let distance = Math.sqrt(
+  let distance = Math.sqrt(  // Distance Between Two Points
     (coords[i - 1][1] - coords[i][1]) ** 2 +
       (coords[i - 1][0] - coords[i][0]) ** 2
   );
@@ -206,36 +278,7 @@ function allPoints(i) {
   }
 }
 
-function shootPoints(point) {
-  let rate = 0.5;
-  for (let progress = 0; progress <= 1; progress += rate) {
-    x = mouse.x + (point[0] - mouse.x) * progress;
-    y = mouse.y + (point[1] - mouse.y) * progress;
-    canctx4.clearRect(0, 0, canvas.width, canvas.height);
-    var shoot = canctx4.createLinearGradient(
-      mouse.x,
-      mouse.y,
-      point[0],
-      point[1]
-    );
-    shoot.addColorStop(0, "red");
-    shoot.addColorStop(0.125, "orange");
-    shoot.addColorStop(0.25, "yellow");
-    shoot.addColorStop(0.375, "green");
-    shoot.addColorStop(0.5, "blue");
-    shoot.addColorStop(0.625, "indigo");
-    shoot.addColorStop(0.75, "violet");
-    shoot.addColorStop(1, "#000000");
-    canctx4.strokeStyle = shoot;
-    canctx4.beginPath();
-    canctx4.moveTo(mouse.x, mouse.y);
-    canctx4.lineTo(point[0], point[1]);
-    canctx4.stroke();
-    canctx4.closePath();
-  }
-}
-
-// Random paths for baddies
+// Random Paths for Baddies
 function boltMaker() {
   let xRan = Math.random() * canvas.width;
   let yRan = Math.random() * canvas.height;
@@ -243,10 +286,9 @@ function boltMaker() {
   let turnRan = Math.floor(Math.random() * 4 + 3);
 
   canctx.lineWidth = 45;
-
   canctx.strokeStyle = `rgb(255,255,235`;
 
-  setTimeout(() => {
+  setTimeout(() => { // Setting a Random Edge for Bolt
     if (sideRan === 0) {
       coords.push([-110, yRan]);
     } else if (sideRan === 1) {
@@ -263,7 +305,7 @@ function boltMaker() {
     coords.push([xRan, yRan]);
     allPoints(1);
 
-    canctx.lineTo(coords[1][0], coords[1][1]);
+    canctx.lineTo(coords[1][0], coords[1][1]); // Attempt to Control Bolt by Quadrant
     for (let i = 2; i < turnRan; i++) {
       if (
         coords[i - 1][0] < 0.5 * canvas.width &&
@@ -305,26 +347,24 @@ function boltMaker() {
       allPoints(i);
     }
 
-    coords.push([0.5 * canvas.width, 0.5 * canvas.height]);
-
+    coords.push([0.5 * canvas.width, 0.5 * canvas.height]); 
     canctx.lineTo(0.5 * canvas.width, 0.5 * canvas.height);
     canctx.lineJoin = "bevel";
-    canctx.stroke();
+    canctx.stroke(); // Draw Bolt
     allPoints(coords.length - 1);
     var strike = new Sound("assets/strike.wav");
     strike.play();
   }, 2450);
-
-  // return coords;
 }
 
+// Only Making One Enemy for Now
 function makeEnemies() {
   var sunny = new Sound(`assets/storm.mp3`);
   sunny.play();
   setTimeout(() => {
     points.forEach((point) => {
-      setTimeout(() => {
-        if (point[2]) {
+      setTimeout(() => { 
+        if (point[2]) { // If in Tower Radius:
           canctx2.clearRect(0, 0, canvas.width, canvas.height);
           canctx2.strokeStyle = "#ff0000";
           canctx2.beginPath();
@@ -335,6 +375,7 @@ function makeEnemies() {
           console.log(obsesso.value);
           obsesso.value = obsesso.value - 0.05;
 
+          // WORKING ON MORE ENEMIES (NOT VERY DRY OR DYNAMIC YET)
           // canctx4.strokeStyle = "#000000";
           // canctx4.beginPath();
           // canctx4.moveTo(mouse.x, mouse.y);
@@ -372,10 +413,10 @@ function makeEnemies() {
           //     }, 1);
           //   }
           // }
-        } else if (!point[2]) {
+
+        } else if (!point[2]) { // If Outside Tower Radius
           canctx2.clearRect(0, 0, canvas.width, canvas.height);
           canctx4.clearRect(0, 0, canvas.width, canvas.height);
-
           canctx2.strokeStyle = "#000000";
           canctx2.beginPath();
           canctx2.arc(point[0], point[1], 10, 0, 360);
@@ -383,11 +424,11 @@ function makeEnemies() {
           canctx2.closePath();
         }
        
-        if (points.indexOf(point) >= points.length - 1) {
+        if (points.indexOf(point) >= points.length - 1) { // Losing Conditions
           lose();
           return makeEnemies;
         }
-        if (obsesso.value <= 0) {
+        if (obsesso.value <= 0) { // Winning Conditions
           win();
           return makeEnemies;
         }
@@ -395,6 +436,73 @@ function makeEnemies() {
     });
   }, 3000);
 }
+
+// Places Tower
+function towerPlacer() {
+  canctx3.clearRect(0,0, canvas.width, canvas.height);
+  aim();
+  canctx3.drawImage(
+    logician,
+    mouse.x - logicianWidth * 0.5,
+    mouse.y - logicianHeight * 0.5
+  );
+  document.removeEventListener("mousemove", towerMaker);
+  document.removeEventListener("click", towerPlacer);
+}
+
+// Creating Tower Range
+function towerRange() {
+  canctx3.beginPath();
+  canctx3.arc(mouse.x, mouse.y, 125, 0, 360);
+  canctx3.fillColor = "yellow";
+  canctx3.globalAlpha = 0.3;
+  canctx3.closePath();
+  canctx3.fill();
+}
+
+// Manipulating Points Array (False for Outside Tower Radius / True for Inside)
+function aim() {
+  points.forEach((point) => {
+    distance = Math.sqrt((point[1] - mouse.y) ** 2 + (point[0] - mouse.x) ** 2);
+    if (distance > 125) {
+      point[2] = false;
+    } else {
+      point[2] = true;
+    }
+  });
+}
+
+// Points Between Tower and Enemy
+function shootPoints(point) {
+  let rate = 0.5;
+  for (let progress = 0; progress <= 1; progress += rate) {
+    x = mouse.x + (point[0] - mouse.x) * progress;
+    y = mouse.y + (point[1] - mouse.y) * progress;
+    canctx4.clearRect(0, 0, canvas.width, canvas.height);
+    var shoot = canctx4.createLinearGradient(
+      mouse.x,
+      mouse.y,
+      point[0],
+      point[1]
+    );
+    shoot.addColorStop(0, "indigo"); // Lazer Beam
+    shoot.addColorStop(0.125, "purple");
+    shoot.addColorStop(0.25, "red");
+    shoot.addColorStop(0.375, "orange");
+    shoot.addColorStop(0.5, "indigo");
+    shoot.addColorStop(0.625, "purple");
+    shoot.addColorStop(0.75, "red");
+    shoot.addColorStop(1, "orange");
+    canctx4.strokeStyle = shoot;
+    canctx4.beginPath();
+    canctx4.moveTo(mouse.x, mouse.y);
+    canctx4.lineTo(point[0], point[1]);
+    canctx4.stroke();
+    canctx4.closePath();
+  }
+}
+
+// Win Function
 function win() {
   canctx.clearRect(0, 0, canvas.width, canvas.height);
   canctx2.clearRect(0, 0, canvas.width, canvas.height);
@@ -417,6 +525,8 @@ function win() {
   canctx4.textAlign = "center";
   canctx4.fillText("You win!", canvas.width / 2, canvas.height / 5);
 }
+
+// Lose Function
 function lose() {
   canctx.clearRect(0, 0, canvas.width, canvas.height);
   canctx2.clearRect(0, 0, canvas.width, canvas.height);
@@ -439,135 +549,31 @@ function lose() {
   canctx4.textAlign = "center";
   canctx4.fillText("You lose!", canvas.width / 2, canvas.height / 5);
 }
-// Title and transition page text
-function transitionText() {
-  canctx.font = "100px Cursive";
-  canctx.fillStyle = "black";
-  canctx.textAlign = "center";
-  canctx.fillText("Brain Storm", canvas.width / 2, canvas.height / 5);
-  canctx.font = "17px Times New Roman";
-  canctx.fillText(
-    "(Click Anywhere to Start)",
-    canvas.width / 2,
-    canvas.height / 1.2
-  );
-}
 
-// Title and transition screen
-function transitionScreen() {
-  idyllMaker();
-  brainMaker();
-  transitionText();
-}
-
-// Creating next level
-function levelUp() {
-  cloudMaker();
-  boltMaker();
-  makeEnemies();
-  if (obsesso.value <= 0) {
-    return;
-  }
-  document.addEventListener("mousemove", towerMaker);
-  document.removeEventListener("click", levelUp);
-}
-
-// Placing Tower
-function towerMaker(event) {
-  mouse.x = event.x;
-  mouse.y = event.y;
-  canctx3.clearRect(0, 0, canvas.width, canvas.height);
-  canctx3.drawImage(
-    logician,
-    mouse.x - logicianWidth * 0.5,
-    mouse.y - logicianHeight * 0.5
-  );
-  towerRange();
-  // coin = 500;
-  // if (coin >= 100) {
-  document.addEventListener("click", towerPlacer);
-
-  //   coin = coin - 100;
-  //   document.addEventListener("mousemove", towerMaker);
-  //   towerPlacer();
-  // }
-}
-function towerPlacer() {
-  aim();
-
-  // shoot();
-  canctx3.drawImage(
-    logician,
-    mouse.x - logicianWidth * 0.5,
-    mouse.y - logicianHeight * 0.5
-  );
-
-  document.removeEventListener("mousemove", towerMaker);
-  document.removeEventListener("click", towerPlacer);
-}
-
-function towerRange() {
-  canctx3.beginPath();
-  canctx3.arc(mouse.x, mouse.y, 125, 0, 360);
-  canctx3.fillColor = "yellow";
-  canctx3.globalAlpha = 0.3;
-  canctx3.closePath();
-  canctx3.fill();
-}
-
-function aim() {
-  points.forEach((point) => {
-    distance = Math.sqrt((point[1] - mouse.y) ** 2 + (point[0] - mouse.x) ** 2);
-
-    if (distance > 125) {
-      point[2] = false;
-    } else {
-      point[2] = true;
-    }
-  });
-}
-
-// Resize title screen
-function resize() {
-  window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas2.width = window.innerWidth;
-    canvas2.height = window.innerHeight;
-    canvas3.width = window.innerWidth;
-    canvas3.height = window.innerHeight;
-    transitionScreen();
-  });
-  window.removeEventListener("resize", resize);
-}
 // Engine
 transitionScreen();
-
 resize();
 document.addEventListener("click", levelUp);
+
+// FUTURE WORK 
 
 // game board const menu / const stats / info bar
 
 // projectiles
 
-// towers
-// Dopa-mines
-// Posi-titans
-// Logicians (shoot bullets)
-// Hero: BFF (can be placed on any path until death, timed refresh)
+// Towers
+//    Dopa-mines
+//    Posi-titans
+//    Logicians (shoot bullets)
+//    Hero: BFF (can be placed on any path until death, timed refresh)
+//    consider: speed, strength, special powers, cost
 
-// consider: speed, strength, special powers, cost
+// Enemies
+//    Obsess-O's
+//    Depressers (slow down towers)
+//    Anxie-T's (fly)
+//    X's (mean dialogue, super strong)
+//    Moodies (replicating beers)
+//    Bosses (actual bosses - mean dialogue)
+//    consider: speed, strength, special powers, value
 
-// Obsess-O's
-
-// Depressers (slow down towers)
-// Anxie-T's (fly)
-// X's (mean dialogue, super strong)
-// Moodies (replicating beers)
-// Bosses (actual bosses - mean dialogue)
-
-// consider: speed, strength, special powers, value
-
-// resources
-
-// utilities
