@@ -67,10 +67,23 @@ class Enemy {
     this.value = value;
     this.speed = speed;
   }
+  draw(point) {
+    canctx2.clearRect(0, 0, canvas.width, canvas.height);
+    canctx4.clearRect(0, 0, canvas.width, canvas.height);
+    canctx2.beginPath();
+    canctx2.arc(point[0], point[1], 10, 0, 360);
+    canctx2.stroke();
+    canctx2.closePath();
+  }
 }
-var obsesso = new Enemy("Obsess-O", 300, 2);
 
-class Sound { // NEED TO STOP SOUNDS
+// MORE ENEMIES COMING
+const obsesso = new Enemy("Obsess-O", 300, 2);
+
+// TOWER CONSTRUCTOR COMING
+
+class Sound {
+  // NEED TO STOP SOUNDS
   constructor(src) {
     this.Sound = document.createElement("audio");
     this.Sound.src = src;
@@ -109,21 +122,24 @@ function brainMaker() {
 
 // Idyllic Opening Scene
 function idyllMaker() {
-  house.onload = function () {  // House
+  house.onload = function () {
+    // House
     canctx4.drawImage(
       house,
       0.1 * canvas.width - 0.5 * houseWidth,
       0.5 * canvas.height - 0.5 * houseHeight
     );
   };
-  playground.onload = function () { // Playground
+  playground.onload = function () {
+    // Playground
     canctx4.drawImage(
       playground,
       0.7 * canvas.width - 0.5 * playWidth,
       0.8 * canvas.height - 0.5 * playHeight
     );
   };
-  forest.onload = function () { // Forest
+  forest.onload = function () {
+    // Forest
     canctx4.drawImage(
       forest,
       0.8 * canvas.width - 0.5 * forestWidth,
@@ -131,7 +147,8 @@ function idyllMaker() {
     );
   };
 
-  pup.onload = function () { // Playing Pup
+  pup.onload = function () {
+    // Playing Pup
     canctx4.drawImage(
       pup,
       0.15 * canvas.width - 0.5 * pupWidth,
@@ -139,7 +156,8 @@ function idyllMaker() {
     );
   };
 
-  var earth = canctx2.createLinearGradient( // Radiant Ground
+  var earth = canctx2.createLinearGradient(
+    // Radiant Ground
     0.5 * canvas.width,
     0.5 * canvas.height,
     0.5 * canvas.width,
@@ -151,8 +169,8 @@ function idyllMaker() {
   canctx.fillStyle = earth;
   canctx.fillRect(0, (1 / 2) * canvas.height, canvas.width, canvas.height);
 
-  
-  var sky = canctx.createLinearGradient( // Radiant Sky
+  var sky = canctx.createLinearGradient(
+    // Radiant Sky
     0.5 * canvas.width,
     0,
     0.5 * canvas.width,
@@ -164,8 +182,8 @@ function idyllMaker() {
   canctx.fillStyle = sky;
   canctx.fillRect(0, 0, canvas.width, (1 / 2) * canvas.height);
 
-  
-  var sun = canctx2.createRadialGradient( // Radiant Sun
+  var sun = canctx2.createRadialGradient(
+    // Radiant Sun
     canvas.width,
     0,
     10,
@@ -266,7 +284,8 @@ function cloudMaker() {
 
 // Get Points on a Line
 function allPoints(i) {
-  let distance = Math.sqrt(  // Distance Between Two Points
+  let distance = Math.sqrt(
+    // Distance Between Two Points
     (coords[i - 1][1] - coords[i][1]) ** 2 +
       (coords[i - 1][0] - coords[i][0]) ** 2
   );
@@ -288,7 +307,8 @@ function boltMaker() {
   canctx.lineWidth = 45;
   canctx.strokeStyle = `rgb(255,255,235`;
 
-  setTimeout(() => { // Setting a Random Edge for Bolt
+  setTimeout(() => {
+    // Setting a Random Edge for Bolt
     if (sideRan === 0) {
       coords.push([-110, yRan]);
     } else if (sideRan === 1) {
@@ -347,7 +367,7 @@ function boltMaker() {
       allPoints(i);
     }
 
-    coords.push([0.5 * canvas.width, 0.5 * canvas.height]); 
+    coords.push([0.5 * canvas.width, 0.5 * canvas.height]);
     canctx.lineTo(0.5 * canvas.width, 0.5 * canvas.height);
     canctx.lineJoin = "bevel";
     canctx.stroke(); // Draw Bolt
@@ -363,16 +383,12 @@ function makeEnemies() {
   sunny.play();
   setTimeout(() => {
     points.forEach((point) => {
-      setTimeout(() => { 
-        if (point[2]) { // If in Tower Radius:
-          canctx2.clearRect(0, 0, canvas.width, canvas.height);
+      setTimeout(() => {
+        if (point[2]) {
+          // If in Tower Radius:
           canctx2.strokeStyle = "#ff0000";
-          canctx2.beginPath();
-          canctx2.arc(point[0], point[1], 10, 0, 360);
-          canctx2.stroke();
-          canctx2.closePath();
+          obsesso.draw(point);
           shootPoints(point);
-          console.log(obsesso.value);
           obsesso.value = obsesso.value - 0.05;
 
           // WORKING ON MORE ENEMIES (NOT VERY DRY OR DYNAMIC YET)
@@ -413,22 +429,19 @@ function makeEnemies() {
           //     }, 1);
           //   }
           // }
-
-        } else if (!point[2]) { // If Outside Tower Radius
-          canctx2.clearRect(0, 0, canvas.width, canvas.height);
-          canctx4.clearRect(0, 0, canvas.width, canvas.height);
+        } else if (!point[2]) {
+          // If Outside Tower Radius
           canctx2.strokeStyle = "#000000";
-          canctx2.beginPath();
-          canctx2.arc(point[0], point[1], 10, 0, 360);
-          canctx2.stroke();
-          canctx2.closePath();
+          obsesso.draw(point);
         }
-       
-        if (points.indexOf(point) >= points.length - 1) { // Losing Conditions
+
+        if (points.indexOf(point) >= points.length - 1) {
+          // Losing Conditions
           lose();
           return makeEnemies;
         }
-        if (obsesso.value <= 0) { // Winning Conditions
+        if (obsesso.value <= 0) {
+          // Winning Conditions
           win();
           return makeEnemies;
         }
@@ -439,7 +452,7 @@ function makeEnemies() {
 
 // Places Tower
 function towerPlacer() {
-  canctx3.clearRect(0,0, canvas.width, canvas.height);
+  canctx3.clearRect(0, 0, canvas.width, canvas.height);
   aim();
   canctx3.drawImage(
     logician,
@@ -555,7 +568,7 @@ transitionScreen();
 resize();
 document.addEventListener("click", levelUp);
 
-// FUTURE WORK 
+// FUTURE WORK
 
 // game board const menu / const stats / info bar
 
@@ -576,4 +589,3 @@ document.addEventListener("click", levelUp);
 //    Moodies (replicating beers)
 //    Bosses (actual bosses - mean dialogue)
 //    consider: speed, strength, special powers, value
-
