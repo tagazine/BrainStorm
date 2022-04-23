@@ -73,12 +73,18 @@ class Enemy {
     canctx2.beginPath();
     canctx2.arc(point[0], point[1], 10, 0, 360);
     canctx2.stroke();
+    canctx2.closePath();
+    canctx2.beginPath();
     canctx2.strokeStyle = "red";
     canctx2.arc(point[0], point[1], 7, 0, 360);
     canctx2.stroke();
+    canctx2.closePath();
+    canctx2.beginPath();
     canctx2.strokeStyle = "green";
     canctx2.arc(point[0], point[1], 4, 0, 360);
     canctx2.stroke();
+    canctx2.closePath();
+    canctx2.beginPath();
     canctx2.strokeStyle = "black";
     canctx2.arc(point[0], point[1], 1, 0, 360);
     canctx2.stroke();
@@ -112,6 +118,10 @@ class Sound {
     };
   }
 }
+
+const storm = new Sound(`assets/storm.mp3`);
+const yay = new Sound(`assets/yay.wav`);
+const strike = new Sound("assets/strike.wav");
 
 // Functions
 // Making and Drawing the Two Brains
@@ -215,7 +225,7 @@ function idyllMaker() {
 function transitionText() {
   canctx.font = "100px Copperplate Gothic";
   canctx.strokeStyle = "black";
-  canctx.fillStyle = 'yellow';
+  canctx.fillStyle = "yellow";
   canctx.textAlign = "center";
   canctx.fillText("Brain Storm", canvas.width / 2, canvas.height / 5);
   canctx.font = "17px Times New Roman";
@@ -387,15 +397,13 @@ function boltMaker() {
     canctx.lineJoin = "bevel";
     canctx.stroke(); // Draw Bolt
     allPoints(coords.length - 1);
-    var strike = new Sound("assets/strike.wav");
     strike.play();
   }, 2450);
 }
 
 // Only Making One Enemy for Now
 function makeEnemies() {
-  var sunny = new Sound(`assets/storm.mp3`);
-  sunny.play();
+  storm.play();
   setTimeout(() => {
     points.forEach((point) => {
       setTimeout(() => {
@@ -460,6 +468,7 @@ function makeEnemies() {
         if (obsesso.value <= 0) {
           // Winning Conditions
           win();
+          // yay.stop(); STILL WORKING ON THIS FUNCTIONALITY
           return makeEnemies;
         }
       }, 5);
@@ -534,6 +543,9 @@ function shootPoints(point) {
 
 // Win Function
 function win() {
+  storm.stop();
+  // yay.play(); STILL WORKING ON THIS FUNCTIONALITY
+    
   canctx.clearRect(0, 0, canvas.width, canvas.height);
   canctx2.clearRect(0, 0, canvas.width, canvas.height);
   canctx3.clearRect(0, 0, canvas.width, canvas.height);
