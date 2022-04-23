@@ -216,9 +216,9 @@ function idyllMaker() {
   );
   sun.addColorStop(0, "orange");
   sun.addColorStop(1, "yellow");
-  canctx.arc(canvas.width, 0, 250, 0, 2 * Math.PI);
-  canctx.fillStyle = sun;
-  canctx.fill();
+  canctx4.arc(canvas.width, 0, 250, 0, 2 * Math.PI);
+  canctx4.fillStyle = sun;
+  canctx4.fill();
 }
 
 // Title and Transition Page Text
@@ -480,6 +480,7 @@ function makeEnemies() {
 function towerPlacer() {
   canctx3.clearRect(0, 0, canvas.width, canvas.height);
   aim();
+  canctx3.strokeStyle = "black";
   canctx3.drawImage(
     logician,
     mouse.x - logicianWidth * 0.5,
@@ -493,7 +494,7 @@ function towerPlacer() {
 function towerRange() {
   canctx3.beginPath();
   canctx3.arc(mouse.x, mouse.y, 125, 0, 360);
-  canctx3.fillColor = "yellow";
+  canctx3.fillStyle = "red";
   canctx3.globalAlpha = 0.3;
   canctx3.closePath();
   canctx3.fill();
