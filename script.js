@@ -213,11 +213,13 @@ function idyllMaker() {
 
 // Title and Transition Page Text
 function transitionText() {
-  canctx.font = "100px Cursive";
-  canctx.fillStyle = "black";
+  canctx.font = "100px Copperplate Gothic";
+  canctx.strokeStyle = "black";
+  canctx.fillStyle = 'yellow';
   canctx.textAlign = "center";
   canctx.fillText("Brain Storm", canvas.width / 2, canvas.height / 5);
   canctx.font = "17px Times New Roman";
+  canctx.fillStyle = "black";
   canctx.fillText(
     "(Click Anywhere to Start)",
     canvas.width / 2,
@@ -548,7 +550,7 @@ function win() {
   canctx4.fillStyle = sky;
   canctx4.fillRect(0, 0, canvas.width, canvas.height);
   brainMaker();
-  canctx4.font = "100px Cursive";
+  canctx4.font = "100px Copperplate Gothic";
   canctx4.fillStyle = "black";
   canctx4.textAlign = "center";
   canctx4.fillText("You win!", canvas.width / 2, canvas.height / 5);
@@ -572,7 +574,7 @@ function lose() {
   canctx4.fillStyle = sky;
   canctx4.fillRect(0, 0, canvas.width, canvas.height);
   canctx4.drawImage(badBrain, badBrainLocX, badBrainLocY);
-  canctx4.font = "100px Cursive";
+  canctx4.font = "100px Copperplate Gothic";
   canctx4.fillStyle = "black";
   canctx4.textAlign = "center";
   canctx4.fillText("You lose!", canvas.width / 2, canvas.height / 5);
