@@ -216,9 +216,9 @@ function idyllMaker() {
   );
   sun.addColorStop(0, "orange");
   sun.addColorStop(1, "yellow");
-  canctx2.arc(canvas.width, 0, 250, 0, 2 * Math.PI);
-  canctx2.fillStyle = sun;
-  canctx2.fill();
+  canctx.arc(canvas.width, 0, 250, 0, 2 * Math.PI);
+  canctx.fillStyle = sun;
+  canctx.fill();
 }
 
 // Title and Transition Page Text
